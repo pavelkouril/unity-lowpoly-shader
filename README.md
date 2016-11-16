@@ -4,6 +4,8 @@ This shader is a simple way to render your meshes in the lowpoly style.
 
 I have developed it for an upcoming game, and there's no point in keeping it just for myself - especially since I know tons of people are looking for a lowpoly shader, but there isn't a viable free option available.
 
+![Before X After comparison](http://i.imgur.com/8blLN5t.png)
+
 ## Usage
 
 To use it, just change the shader of a material to `Pavel Kouřil/LowPoly`. It takes the textures and converts them to the lowpoly style based on center of UV coordinates of a face.
