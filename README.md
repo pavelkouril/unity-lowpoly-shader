@@ -12,9 +12,9 @@ To use it, just change the shader of a material to `Pavel Kouřil/LowPoly`. It t
 
 HOWEVER, there are some limitations:
 
-- It doesn't work for Unity terrain.
-- Sometimes the lowpoly shaded face will look ugly because of the way UV coordinates are used for coloring face. Modifying the texture will fix this.
-- Only one light is supported at the moment.
+- Sometimes, the lightning/shadows seems to be kinda off. *I'm investigating this, but I can't find the solution to make it look nicer.*
+- It works for terrain, but the results are sometimes looking subpar.
+- For some models, the lowpoly shaded face can look ugly (the color not fitting the rest of the model); this is caused by using "bad" part of texture (UV coordinates are taken from center of the face). Modifying the texture will fix this.
 
 Fixing the lights and adding support for Unity terrain is definitely on my todo list, but if you need it ASAP, it's better to just send a pull request!
 
@@ -26,5 +26,7 @@ Fixing the lights and adding support for Unity terrain is definitely on my todo 
 ## Contributing
 
 Contributing is definitely welcome! All you need to do is send a pull request with your patch.
+
+If you just have some ideas what the shader is lacking, feel free just to create an issue. Do not use issues for support questions though.
 
 *PS: Just don't forget to add a test scene (similiar to the already existing test scenes in `Tests` folder) with the specific scenario you wanted to accomplish. This will help others doing contributions check that they didn't break anything that worked previously. :)*
