@@ -27,6 +27,4 @@ Fixing the lights and adding support for Unity terrain is definitely on my todo 
 
 Contributing is definitely welcome! All you need to do is send a pull request with your patch.
 
-If you just have some ideas what the shader is lacking, feel free just to create an issue. Do not use issues for support questions though.
-
-*PS: Just don't forget to add a test scene (similiar to the already existing test scenes in `Tests` folder) with the specific scenario you wanted to accomplish. This will help others doing contributions check that they didn't break anything that worked previously. :)*
+If you just have some ideas what the shader is lacking (or find a bug!), feel free just to create an issue with detailed description or buggy use-case of the shader (something looking "off"; ideally include pictures and steps to recreate). However, please, do not use issues for support questions.
