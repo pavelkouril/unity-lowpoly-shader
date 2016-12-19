@@ -1,4 +1,4 @@
-﻿Shader "Pavel Kouril/LowPoly"
+Shader "Pavel Kouril/LowPoly"
 {
 	Properties
 	{
@@ -59,9 +59,9 @@
 				#ifdef VERTEXLIGHT_ON
 				for (int index = 0; index < 4; index++)
 				{
-					float3 normalDir = normalize(mul(float4(v.normal, 0.0), unity_WorldToObject).xyz);
+					float3 normalDir = normalize(mul(float4(v.normal, 0.0), _World2Object).xyz);
 					float3 lightPosition = float3(unity_4LightPosX0[index], unity_4LightPosY0[index], unity_4LightPosZ0[index]);
-					float3 vertexToLightSource = lightPosition - mul(unity_ObjectToWorld, v.vertex);
+					float3 vertexToLightSource = lightPosition - mul(_Object2World, v.vertex);
 					float3 lightDir = normalize(vertexToLightSource);
 					float distanceSquared = dot(vertexToLightSource, vertexToLightSource);
 					float attenuation = 1.0 / (1.0 + unity_4LightAtten0[index] * distanceSquared);
@@ -85,7 +85,7 @@
 				OUT.norm = normalize(IN[0].norm + IN[1].norm + IN[2].norm);
 				OUT.uv = (IN[0].uv + IN[1].uv + IN[2].uv) / 3;
 				OUT.vertexLighting = (IN[0].vertexLighting + IN[1].vertexLighting + IN[2].vertexLighting) / 3;
-				OUT.posWorld = mul(unity_ObjectToWorld, (IN[0].vertex + IN[1].vertex + IN[2].vertex) / 3);
+				OUT.posWorld = mul(_Object2World, (IN[0].vertex + IN[1].vertex + IN[2].vertex) / 3);
 
 				OUT.pos = IN[0].pos;
 				TRANSFER_VERTEX_TO_FRAGMENT(OUT);
@@ -102,7 +102,7 @@
 
 			half4 frag(g2f IN) : COLOR
 			{
-				float3 normalDir = normalize(mul(float4(IN.norm, 0.0), unity_WorldToObject).xyz);
+				float3 normalDir = normalize(mul(float4(IN.norm, 0.0), _Object2World).xyz);
 				float3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
 
 				float3 ambientLight = UNITY_LIGHTMODEL_AMBIENT.rgb * _Color.rgb;
@@ -181,7 +181,7 @@
 					g2f OUT;
 					OUT.norm = normalize(IN[0].norm + IN[1].norm + IN[2].norm);
 					OUT.uv = (IN[0].uv + IN[1].uv + IN[2].uv) / 3;
-					OUT.posWorld = mul(unity_ObjectToWorld, (IN[0].vertex + IN[1].vertex + IN[2].vertex) / 3);
+					OUT.posWorld = mul(_Object2World, (IN[0].vertex + IN[1].vertex + IN[2].vertex) / 3);
 
 					unityTransferVertexToFragmentSucksHack v;
 
@@ -203,7 +203,7 @@
 
 				float4 frag(g2f IN) : COLOR
 				{
-					float3 normalDir = normalize(mul(float4(IN.norm, 0.0), unity_WorldToObject).xyz);
+					float3 normalDir = normalize(mul(float4(IN.norm, 0.0), _World2Object).xyz);
 					float3 vertexToLight = _WorldSpaceLightPos0.w == 0 ? _WorldSpaceLightPos0.xyz : _WorldSpaceLightPos0.xyz - IN.posWorld.xyz;
 					float3 lightDir = normalize(vertexToLight);
 
