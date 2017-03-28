@@ -25,6 +25,7 @@
 			#pragma geometry geom
 			#pragma fragment frag
 			#pragma multi_compile_fwdbase
+			#pragma multi_compile_fog    
 
 			uniform float4 _Color;
 			uniform sampler2D _MainTex;
@@ -47,6 +48,7 @@
 				float4 posWorld : TEXCOORD1;
 				float3 vertexLighting : TEXCOORD2;
 				LIGHTING_COORDS(3, 4)
+				UNITY_FOG_COORDS(5)
 			};
 
 			v2g vert(appdata_full v)
@@ -91,14 +93,17 @@
 
 				OUT.pos = IN[0].pos;
 				TRANSFER_VERTEX_TO_FRAGMENT(OUT);
+				UNITY_TRANSFER_FOG(OUT, UnityObjectToClipPos(IN[0].vertex));
 				triStream.Append(OUT);
 
 				OUT.pos = IN[1].pos;
 				TRANSFER_VERTEX_TO_FRAGMENT(OUT);
+				UNITY_TRANSFER_FOG(OUT, UnityObjectToClipPos(IN[1].vertex));
 				triStream.Append(OUT);
 
 				OUT.pos = IN[2].pos;
 				TRANSFER_VERTEX_TO_FRAGMENT(OUT);
+				UNITY_TRANSFER_FOG(OUT, UnityObjectToClipPos(IN[2].vertex));
 				triStream.Append(OUT);
 			}
 
@@ -120,7 +125,9 @@
 				}
 
 				float4 colorTex = tex2D(_MainTex, IN.uv);
-				return float4((IN.vertexLighting + ambientLight + diffuseReflection + specularReflection) * colorTex, 1);
+				float3 finalColor = (IN.vertexLighting + ambientLight + diffuseReflection + specularReflection) * colorTex;
+				UNITY_APPLY_FOG(IN.fogCoord, finalColor);
+				return float4(finalColor, 1);
 			}
 
 				ENDCG
@@ -138,6 +145,7 @@
 				#pragma geometry geom
 				#pragma fragment frag
 				#pragma multi_compile_fwdadd_fullshadows
+				#pragma multi_compile_fog    
 
 				#include "UnityCG.cginc"
 				#include "AutoLight.cginc"
@@ -161,6 +169,7 @@
 					float4 posWorld : TEXCOORD0;
 					float3 uv : TEXCOORD1;
 					LIGHTING_COORDS(3, 4)
+					UNITY_FOG_COORDS(5)
 				};
 
 				// hack because TRANSFER_VERTEX_TO_FRAGMENT has harcoded requirement for 'v.vertex'
@@ -189,18 +198,21 @@
 					OUT.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 					OUT.posWorld = mul(unity_ObjectToWorld, v.vertex);
 					TRANSFER_VERTEX_TO_FRAGMENT(OUT);
+					UNITY_TRANSFER_FOG(OUT, UnityObjectToClipPos(IN[0].vertex));
 					triStream.Append(OUT);
 
 					v.vertex = IN[1].vertex;
 					OUT.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 					OUT.posWorld = mul(unity_ObjectToWorld, v.vertex);
 					TRANSFER_VERTEX_TO_FRAGMENT(OUT);
+					UNITY_TRANSFER_FOG(OUT, UnityObjectToClipPos(IN[1].vertex));
 					triStream.Append(OUT);
 
 					v.vertex = IN[2].vertex;
 					OUT.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 					OUT.posWorld = mul(unity_ObjectToWorld, v.vertex);
 					TRANSFER_VERTEX_TO_FRAGMENT(OUT);
+					UNITY_TRANSFER_FOG(OUT, UnityObjectToClipPos(IN[2].vertex));
 					triStream.Append(OUT);
 				}
 
@@ -221,7 +233,9 @@
 					
 					float3 diffuseReflection = atten * _LightColor0.rgb * _Color.rgb * max(0.0, dot(normalDir, lightDir));
 					float4 colorTex = tex2D(_MainTex, IN.uv);
-					return float4((diffuseReflection + specularReflection) * colorTex, 1);
+					float3 finalColor = (diffuseReflection + specularReflection) * colorTex;
+					UNITY_APPLY_FOG(IN.fogCoord, finalColor);
+					return float4(finalColor, 1);
 				}
 
 				ENDCG
