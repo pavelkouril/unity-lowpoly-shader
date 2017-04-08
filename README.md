@@ -1,30 +1,26 @@
 # Unity Low-poly Shader
 
-This shader is a simple way to render your meshes in the lowpoly style.
-
-I have developed it for an upcoming game, and there's no point in keeping it just for myself - especially since I know tons of people are looking for a lowpoly shader, but there isn't a viable free option available.
+This shader is a simple way to render your smooth meshes in the low poly, flat shaded style.
 
 ![Before X After comparison](http://i.imgur.com/8blLN5t.png)
 
 ## Usage
 
-To use it, just change the shader of a material to `Pavel Kouřil/LowPoly`. It takes the textures and converts them to the lowpoly style based on center of UV coordinates of a face.
+To use it, just change the shader of a material to `PavelKouril/LowPoly Shader\LowPoly`. The shader takes the mesh and changes the texture coordinates and normals in geometry shader; the texture coordinates are changed to the center of the triangle, and for normals, face normals are calculated.
 
 HOWEVER, there are some limitations:
 
-- Sometimes, the lightning/shadows seems to be kinda off. *I'm investigating this, but I can't find the solution to make it look nicer.*
-- It works for terrain, but the results are sometimes looking subpar.
-- For some models, the lowpoly shaded face can look ugly (the color not fitting the rest of the model); this is caused by using "bad" part of texture (UV coordinates are taken from center of the face). Modifying the texture will fix this.
-
-Fixing the lights and adding support for Unity terrain is definitely on my todo list, but if you need it ASAP, it's better to just send a pull request!
+- Sometimes, the lightning/shadows seems to be kinda off. **If you find a reproducible case where the shader is acting funny, please submit an issue.**
+- It works for terrain, but the results are sometimes looking subpar. This is due to the way the Unity terrain works. A separate set of shaders for terrain would be probably needed.
+- If you are unlucky, the conversion of the texture coordinates will result in a badly looking face. I probably can't do anything with this, sorry. :(
 
 ## Requirements
 
-- Unity 5.4 (it might also work on other versions, I just didn't test it)
-- D3D10 graphics card (you need Geometry Shaders for this to work)
+- Unity 5.6 (it also should work on 5.4 and 5.5, but without any guarantees)
+- Geometry Shaders support on your hardware (this means D3D10+ GPU)
 
 ## Contributing
 
-Contributing is definitely welcome! All you need to do is send a pull request with your patch.
+Contributing is definitely welcome! All you need to do is send a pull request with your patch. :)
 
-If you just have some ideas what the shader is lacking (or find a bug!), feel free just to create an issue with detailed description or buggy use-case of the shader (something looking "off"; ideally include pictures and steps to recreate). However, please, do not use issues for support questions.
+If you just have some ideas what the shader is lacking (or find a bug!), feel free just to create an issue with detailed description or buggy use-case of the shader (ideally include pictures and steps to recreate). However, please, do not use issues for support questions.
