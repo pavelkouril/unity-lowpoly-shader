@@ -1,4 +1,4 @@
-﻿Shader "Pavel Kouril/LowPoly"
+﻿Shader "PavelKouril/LowPoly Shader/LowPoly"
 {
 	Properties
 	{
