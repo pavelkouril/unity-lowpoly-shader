@@ -54,7 +54,7 @@
 			v2g vert(appdata_full v)
 			{
 				v2g OUT;
-				OUT.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				OUT.pos = UnityObjectToClipPos(v.vertex);
 				OUT.norm = v.normal;
 				OUT.uv = v.texcoord;
 				OUT.vertex = v.vertex;
@@ -195,21 +195,21 @@
 					unityTransferVertexToFragmentSucksHack v;
 
 					v.vertex = IN[0].vertex;
-					OUT.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+					OUT.pos = UnityObjectToClipPos(v.vertex);
 					OUT.posWorld = mul(unity_ObjectToWorld, v.vertex);
 					TRANSFER_VERTEX_TO_FRAGMENT(OUT);
 					UNITY_TRANSFER_FOG(OUT, UnityObjectToClipPos(IN[0].vertex));
 					triStream.Append(OUT);
 
 					v.vertex = IN[1].vertex;
-					OUT.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+					OUT.pos = UnityObjectToClipPos(v.vertex);
 					OUT.posWorld = mul(unity_ObjectToWorld, v.vertex);
 					TRANSFER_VERTEX_TO_FRAGMENT(OUT);
 					UNITY_TRANSFER_FOG(OUT, UnityObjectToClipPos(IN[1].vertex));
 					triStream.Append(OUT);
 
 					v.vertex = IN[2].vertex;
-					OUT.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+					OUT.pos = UnityObjectToClipPos(v.vertex);
 					OUT.posWorld = mul(unity_ObjectToWorld, v.vertex);
 					TRANSFER_VERTEX_TO_FRAGMENT(OUT);
 					UNITY_TRANSFER_FOG(OUT, UnityObjectToClipPos(IN[2].vertex));
