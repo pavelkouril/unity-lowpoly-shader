@@ -1,14 +1,18 @@
-﻿Shader "Pavel Kouril/LowPoly" {
-	Properties {
+﻿Shader "PavelKouril/LowPoly Shader/LowPoly"
+{
+	Properties
+	{
 		_Color("Color", Color) = (1,1,1,1)
 		_MainTex("Albedo", 2D) = "white" {}
 		_Shininess ("Shininess", Float) = 10
 	}
-	SubShader {
+	SubShader
+	{
 		Tags {"RenderType" = "Opaque"}
 		Blend SrcAlpha OneMinusSrcAlpha
 
-		Pass {
+		Pass
+		{
 			Tags {"LightMode" = "ForwardBase"}
 
 			CGPROGRAM
@@ -28,7 +32,8 @@
 			uniform sampler2D _MainTex;
 			uniform float _Shininess;
 
-			struct v2g {
+			struct v2g
+			{
 				float4 pos : SV_POSITION;
 				float3 norm : NORMAL;
 				float2 uv : TEXCOORD0;
@@ -37,7 +42,8 @@
 				half fogDepth: TEXCOORD3;
 			};
 
-			struct g2f {
+			struct g2f
+			{
 				float4 pos : SV_POSITION;
 				float3 norm : NORMAL;
 				float2 uv : TEXCOORD0;
@@ -47,7 +53,8 @@
 				half fogDepth: TEXCOORD5;
 			};
 
-			v2g vert(appdata_full v) {
+			v2g vert(appdata_full v)
+			{
 				v2g OUT;
 				OUT.pos = UnityObjectToClipPos(v.vertex);
 				OUT.norm = v.normal;
@@ -56,7 +63,8 @@
 
 				float3 vertexLighting = float3(0, 0, 0);
 				#ifdef VERTEXLIGHT_ON
-				for (int index = 0; index < 4; index++) {
+				for (int index = 0; index < 4; index++)
+				{
 					float3 normalDir = normalize(mul(float4(v.normal, 0.0), unity_WorldToObject).xyz);
 					float3 lightPosition = float3(unity_4LightPosX0[index], unity_4LightPosY0[index], unity_4LightPosZ0[index]);
 					float3 vertexToLightSource = lightPosition - mul(unity_ObjectToWorld, v.vertex);
@@ -77,14 +85,15 @@
 				#elif defined(FOG_EXP2)
 					OUT.fogDepth = exp2(-(OUT.fogDepth * unity_FogParams.y)*(OUT.fogDepth * unity_FogParams.y));
 				#else
-					OUT.fogDepth = 0.0;
+					OUT.fogDepth = 1.0;
 				#endif
 
 				return OUT;
 			}
 
 			[maxvertexcount(3)]
-			void geom(triangle v2g IN[3], inout TriangleStream<g2f> triStream) {
+			void geom(triangle v2g IN[3], inout TriangleStream<g2f> triStream)
+			{
 				float3 v0 = IN[0].pos.xyz;
 				float3 v1 = IN[1].pos.xyz;
 				float3 v2 = IN[2].pos.xyz;
@@ -111,7 +120,8 @@
 				triStream.Append(OUT);
 			}
 
-			half4 frag(g2f IN) : COLOR {
+			half4 frag(g2f IN) : COLOR
+			{
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - IN.posWorld.xyz);
 				float3 normalDir = normalize(mul(float4(IN.norm, 0.0), unity_WorldToObject).xyz);
 				float3 vertexToLight = _WorldSpaceLightPos0.w == 0 ? _WorldSpaceLightPos0.xyz : _WorldSpaceLightPos0.xyz - IN.posWorld.xyz;
@@ -122,7 +132,8 @@
 				float3 diffuseReflection = atten * _LightColor0.rgb * _Color.rgb * saturate(dot(normalDir, lightDir));
 
 				float3 specularReflection = float3(0.0, 0.0, 0.0);
-				if (dot(normalDir, lightDir) >= 0.0) {
+				if (dot(normalDir, lightDir) >= 0.0)
+				{
 					specularReflection = atten * _LightColor0.rgb * pow(max(0.0, dot(reflect(-lightDir, normalDir), viewDir)), _Shininess);
 				}
 
@@ -133,8 +144,9 @@
 			ENDCG
 		}
 		
-		Pass {
-			Tags{"LightMode" = "ForwardAdd"}
+		Pass
+		{
+			Tags {"LightMode" = "ForwardAdd"}
 			Blend One One
 			ZWrite Off
 
@@ -153,13 +165,15 @@
 			uniform sampler2D _MainTex;
 			uniform float _Shininess;
 
-			struct v2g {
+			struct v2g
+			{
 				float3 norm : NORMAL;
 				float3 vertex : TEXCOORD0;
 				float3 uv : TEXCOORD1;
 			};
 
-			struct g2f {
+			struct g2f
+			{
 				float4 pos : SV_POSITION;
 				float3 norm : NORMAL;
 				float4 posWorld : TEXCOORD0;
@@ -168,18 +182,21 @@
 			};
 
 			// hack because TRANSFER_VERTEX_TO_FRAGMENT has harcoded requirement for 'v.vertex'
-			struct unityTransferVertexToFragmentSucksHack {
+			struct unityTransferVertexToFragmentSucksHack
+			{
 				float4 vertex : SV_POSITION;
 			};
 
-			appdata_full vert(appdata_full v) {
+			appdata_full vert(appdata_full v)
+			{
 				appdata_full OUT;
 				OUT = v;
 				return OUT;
 			}
 
 			[maxvertexcount(3)]
-			void geom(triangle appdata_full IN[3], inout TriangleStream<g2f> triStream) {
+			void geom(triangle appdata_full IN[3], inout TriangleStream<g2f> triStream)
+			{
 				g2f OUT;
 				OUT.norm = normalize((IN[0].normal + IN[1].normal + IN[2].normal) / 3);
 				OUT.uv = (IN[0].texcoord + IN[1].texcoord + IN[2].texcoord) / 3;
@@ -205,7 +222,8 @@
 				triStream.Append(OUT);
 			}
 
-			float4 frag(g2f IN) : COLOR {
+			float4 frag(g2f IN) : COLOR
+			{
 				float3 viewDir = normalize(_WorldSpaceCameraPos.xyz - IN.posWorld.xyz);
 				float3 normalDir = normalize(mul(float4(IN.norm, 0.0), unity_WorldToObject).xyz);
 				float3 vertexToLight = _WorldSpaceLightPos0.w == 0 ? _WorldSpaceLightPos0.xyz : _WorldSpaceLightPos0.xyz - IN.posWorld.xyz;
@@ -214,7 +232,8 @@
 				UNITY_LIGHT_ATTENUATION(atten, IN, IN.posWorld.xyz);
 
 				float3 specularReflection = float3(0.0, 0.0, 0.0);
-				if (dot(normalDir, lightDir) >= 0.0) {
+				if (dot(normalDir, lightDir) >= 0.0)
+				{
 					specularReflection = atten * _LightColor0.rgb * pow(max(0.0, dot(reflect(-lightDir, normalDir), viewDir)), _Shininess);
 				}
 				
