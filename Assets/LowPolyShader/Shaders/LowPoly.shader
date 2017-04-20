@@ -10,7 +10,6 @@
 
 		Pass {
 			Tags {"LightMode" = "ForwardBase"}
-			Fog {Mode Off}
 
 			CGPROGRAM
 
@@ -28,7 +27,6 @@
 			uniform float4 _Color;
 			uniform sampler2D _MainTex;
 			uniform float _Shininess;
-			uniform float unity_FogDensity;
 
 			struct v2g {
 				float4 pos : SV_POSITION;
@@ -71,9 +69,9 @@
 				#endif
 				OUT.vertexLighting = vertexLighting;
 
-				OUT.fogDepth = length(UnityObjectToViewPos(v.vertex));
+				OUT.fogDepth = length(UnityObjectToClipPos(v.vertex));
 				#if defined(FOG_LINEAR)
-					OUT.fogDepth = OUT.fogDepth * unity_FogParams.z + unity_FogParams.w;
+					OUT.fogDepth = clamp(OUT.fogDepth * unity_FogParams.z + unity_FogParams.w, 0.0, 1.0);
 				#elif defined(FOG_EXP)
 					OUT.fogDepth = exp2(-(OUT.fogDepth * unity_FogParams.y));
 				#elif defined(FOG_EXP2)
